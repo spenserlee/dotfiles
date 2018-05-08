@@ -10,7 +10,7 @@ mkdir -p ~/.config/nvim/
 
 ln -sf ${WORKDIR}/vim/init.vim ~/.config/nvim/init.vim
 
-if [[ $? -ne 0 ]]; then
+if [ $? -ne 0 ]; then
     p_error "Configuration failed!"
     exit 1
 fi
