@@ -37,6 +37,16 @@ else
     exit 1
 fi
 
+p_header "Installing curl..."
+sudo apt-get install curl --yes
+
+if [ $? -eq 0 ]; then
+    p_success "Success."
+else
+    p_error "Failed to install curl. Exiting..."
+    exit 1
+fi
+
 p_header "Installing neovim..."
 sudo apt-get install neovim --yes
 
