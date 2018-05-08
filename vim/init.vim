@@ -35,7 +35,7 @@ set splitright
 
 set t_Co=256
 set background=dark
-colorscheme desert
+"colorscheme desert
 
 "  -------------------
 "  text formatting
@@ -105,3 +105,38 @@ au TabLeave * let g:lasttab = tabpagenr()
 " Super useful when editing files in the same directory
 map <Leader>te :tabedit <c-r>=expand("%:p:h")<CR>/
 
+"  -------------------
+"  setup vim plug
+"  -------------------
+" ensure we actually have vim plug
+let s:vim_plug = '~/.local/share/nvim/site/autoload/plug.vim'
+
+" if we dont have vimplug yet use this to disable erring first run sections
+let s:first_run = 0
+if empty(glob(s:vim_plug, 1))
+    let s:first_run = 1
+    execute 'silent !curl -fLo' s:vim_plug '--create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+endif
+
+"  -------------------
+"  plugins
+"  -------------------
+
+call plug#begin('~/.local/share/nvim/plugged')
+
+" colorschemes
+Plug 'joshdick/onedark.vim'
+Plug 'cocopon/iceberg.vim'
+
+" functional plugins
+
+
+call plug#end()
+
+"  -------------------
+"  plugin settings
+"  -------------------
+
+if s:first_run == 0
+    colorscheme iceberg
+endif
