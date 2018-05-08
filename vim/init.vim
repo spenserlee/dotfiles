@@ -35,7 +35,7 @@ set splitright
 
 set t_Co=256
 set background=dark
-"colorscheme desert
+colorscheme desert
 
 "  -------------------
 "  text formatting
@@ -111,11 +111,10 @@ map <Leader>te :tabedit <c-r>=expand("%:p:h")<CR>/
 " ensure we actually have vim plug
 let s:vim_plug = '~/.local/share/nvim/site/autoload/plug.vim'
 
-" if we dont have vimplug yet use this to disable erring first run sections
-let s:first_run = 0
 if empty(glob(s:vim_plug, 1))
     let s:first_run = 1
     execute 'silent !curl -fLo' s:vim_plug '--create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
 "  -------------------
@@ -137,6 +136,4 @@ call plug#end()
 "  plugin settings
 "  -------------------
 
-if s:first_run == 0
-    colorscheme iceberg
-endif
+colorscheme iceberg
