@@ -18,8 +18,6 @@ grep ^ /etc/apt/sources.list /etc/apt/sources.list.d/* | grep neovim
 if [ $? -eq 0 ]; then
     p_success "PPA already present."
 else
-    # debian doesn't have add-apt-repository by default
-    sudo apt-get install software-properties-common --yes
     sudo add-apt-repository ppa:neovim-ppa/stable --yes
 
     if [ $? -eq 0 ]; then
