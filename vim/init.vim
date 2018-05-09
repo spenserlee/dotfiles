@@ -35,7 +35,7 @@ set splitright
 
 set t_Co=256
 set background=dark
-colorscheme desert
+colorscheme default
 
 "  -------------------
 "  text formatting
@@ -68,6 +68,12 @@ set wildignore+=*/vendor/cache/*,*/public/system/*,*/tmp/*,*/log/*,*/solr/data/*
 "  -------------------
 "  mappings
 "  -------------------
+
+" pressing esc can be annoying
+inoremap jj <ESC>
+
+" esc in terminal mode to exit insert mode
+:tnoremap <ESC> <C-\><C-n>
 
 " disable ex mode
 noremap Q <NOP>
@@ -125,9 +131,11 @@ call plug#begin('~/.local/share/nvim/plugged')
 " colorschemes
 Plug 'joshdick/onedark.vim'
 Plug 'cocopon/iceberg.vim'
+Plug 'mhartington/oceanic-next'
+Plug 'ayu-theme/ayu-vim'
 
 " functional plugins
-
+Plug 'jiangmiao/auto-pairs'
 
 call plug#end()
 
@@ -135,4 +143,20 @@ call plug#end()
 "  plugin settings
 "  -------------------
 
-colorscheme iceberg
+" Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
+" (see http://sunaku.github.io/tmux-24bit-color.html#usage )
+if (has("nvim"))
+    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+endif
+
+" For Neovim > 0.1.5 and Vim > patch 7.4.1799 <
+if (has("termguicolors"))
+    set termguicolors
+endif
+
+" this is really annoying
+" https://github.com/Microsoft/console/issues/70
+" background colors not being drawn when scrolling in WSL
+
+let ayucolor="dark"
+colorscheme ayu
