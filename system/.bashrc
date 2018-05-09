@@ -22,6 +22,24 @@ PROMPT_DIRTRIM=3
 # https://github.com/Microsoft/WSL/issues/352
 umask 022
 
+# creds:
+# https://stackoverflow.com/a/6086978/5323947
+function color_my_prompt {
+    local time="\[\e[34m\]\T\[\e[m\]-"
+    local user="\[\e[36m\]\u"
+    local at="\[\e[m\]@"
+    local host="\[\e[32m\]\h\[\e[m\]:"
+    local dir="\[\e[33m\]\w"
+    local git_color="\[\033[31m\]"
+    local git_branch='(`git rev-parse --abbrev-ref HEAD 2>/dev/null || echo ''`)'
+    local git_diff='`git rev-parse 2>/dev/null && (git diff --no-ext-diff --quiet --exit-code 2> /dev/null || echo -e \*)`'
+    local prompt="\[\e[m\]$"
+
+    export PS1="$time$user$at$host$dir$git_color$git_branch$git_diff$prompt "
+
+#   local __git_branch='`git branch 2> /dev/null | grep -e ^* | sed -E  s/^\\\\\*\ \(.+\)$/\(\\\\\1\)\ /`'
+}
+
 # --------------------
 # default settings...
 # --------------------
@@ -82,16 +100,11 @@ else
 fi
 unset color_prompt force_color_prompt
 
-# restriction being needs git 1.6.3 or newer
-__git_ps1 () {
-    git rev-parse --abbrev-ref HEAD 2>/dev/null || echo '-'
-}
-
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
     xterm*|rxvt*)
-        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-        #PS1="\T\`__git_ps1\`\u@\h:\w\\$ "
+        #PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+        color_my_prompt
         ;;
     *)
         ;;
