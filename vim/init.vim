@@ -10,9 +10,9 @@ set history=1000                        " command history
 set undofile                            " save mistakes
 set undolevels=1000
 set undoreload=1000
-set clipboard=unnamed                   " use system clipboard
+set clipboard=unnamedplus               " use system clipboard
 set noerrorbells                        " so loud
-set mouse=ni                            " use mouse in normal and insert mode
+set mouse=n                             " use mouse in normal mode
 set backspace=indent,eol,start          " backspace acts sensibly
 
 "  -------------------
@@ -25,10 +25,12 @@ set title                               " show what's open
 set ruler                               " always show current position
 set showcmd                             " display command typed
 set cmdheight=2                         " height of command bar
-set scrolloff=10                        " buffer line space when scrolling up/down
+set scrolloff=3                        " buffer line space when scrolling up/down
 set sidescrolloff=5                     " buffer line space when scrolling left/right
-set number                              " absolue line numbers
-"set relativenumber                      " line number relative to cursor
+set relativenumber                      " line numbers relative to cursor
+set number                              " show absolute line numbers
+set textwidth=80                        " show the 80th column
+set colorcolumn=+1"
 set hlsearch                            " highlight search results
 set splitbelow                          " new panes appear more natural
 set splitright
@@ -56,6 +58,10 @@ set listchars=tab:→→,trail:⋅,nbsp:⋅     " characters to show
 "  -------------------
 "  misc
 "  -------------------
+
+" Use relative numbers by default (normal/visual), but absolue in insert mode
+autocmd! BufLeave,FocusLost,InsertEnter   * set norelativenumber
+autocmd! BufEnter,FocusGained,InsertLeave * set relativenumber
 
 " return to last edit position when opening files
 au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
