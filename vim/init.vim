@@ -46,7 +46,7 @@ colorscheme default
 set ignorecase                          " ignore case when searching
 set smartcase                           " when searching try to be smart
 set smarttab                            " be smart about tabbing
-set wrap                                " wrap text
+"set wrap                                " wrap text
 set expandtab                           " tabs = spaces
 set shiftwidth=4                        " 1 tab == 4 spaces as it should be
 set tabstop=4
