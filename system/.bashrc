@@ -104,7 +104,7 @@ unset color_prompt force_color_prompt
 case "$TERM" in
     xterm*|rxvt*)
         #PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-        color_my_prompt
+        #color_my_prompt
         ;;
     *)
         ;;
@@ -153,4 +153,6 @@ if ! shopt -oq posix; then
         . /etc/bash_completion
     fi
 fi
+
+color_my_prompt
 
