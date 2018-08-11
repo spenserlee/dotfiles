@@ -15,6 +15,8 @@ alias tree="tree -aC -I '.git' --dirsfirst"
 
 export VISUAL=nvim
 export EDITOR="$VISUAL"
+export BROWSER="firefox"
+export DISPLAY=:0.0
 
 PROMPT_DIRTRIM=3
 
@@ -53,8 +55,15 @@ HISTCONTROL=ignoreboth
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+#HISTSIZE=1000
+#HISTFILESIZE=2000
+
+# ulimited bash history
+export HISTFILESIZE=
+export HISTSIZE=
+
+# certain bash sessions truncate .bash_history file
+export HISTFILE=~/.bash_eternal_history
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -155,4 +164,3 @@ if ! shopt -oq posix; then
 fi
 
 color_my_prompt
-

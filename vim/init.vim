@@ -35,9 +35,10 @@ set hlsearch                            " highlight search results
 set splitbelow                          " new panes appear more natural
 set splitright
 
+"set background=dark
+"colorscheme default
 set t_Co=256
 set background=dark
-colorscheme default
 
 "  -------------------
 "  text formatting
@@ -81,6 +82,9 @@ inoremap jj <ESC>
 " esc in terminal mode to exit insert mode
 :tnoremap <ESC> <C-\><C-n>
 
+" search visually selected text, press /
+vnoremap // y/\V<C-r>=escape(@",'/\')<CR><CR>
+
 " disable ex mode
 noremap Q <NOP>
 
@@ -118,6 +122,12 @@ au TabLeave * let g:lasttab = tabpagenr()
 map <Leader>te :tabedit <c-r>=expand("%:p:h")<CR>/
 
 "  -------------------
+"  Python stuff
+"  -------------------
+let g:python_host_prog = '/usr/bin/python'
+let g:python3_host_prog = '/usr/bin/python3'
+
+"  -------------------
 "  setup vim plug
 "  -------------------
 " ensure we actually have vim plug
@@ -135,13 +145,13 @@ endif
 call plug#begin('~/.local/share/nvim/plugged')
 
 " colorschemes
-Plug 'joshdick/onedark.vim'
-Plug 'cocopon/iceberg.vim'
-Plug 'mhartington/oceanic-next'
 Plug 'ayu-theme/ayu-vim'
+Plug 'arcticicestudio/nord-vim'
+Plug 'chriskempson/base16-vim'
 
 " functional plugins
 Plug 'jiangmiao/auto-pairs'
+Plug 'ctrlpvim/ctrlp.vim'
 
 call plug#end()
 
@@ -149,20 +159,21 @@ call plug#end()
 "  plugin settings
 "  -------------------
 
+" Use MRU as default for CTRLP
+let g:ctrlp_map='<c-p>'
+let g:ctrlp_cmd='CtrlPMRU'
+
 " Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
 " (see http://sunaku.github.io/tmux-24bit-color.html#usage )
 if (has("nvim"))
-    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+    "let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 endif
 
 " For Neovim > 0.1.5 and Vim > patch 7.4.1799 <
 if (has("termguicolors"))
-    set termguicolors
+   "set termguicolors
 endif
 
-" this is really annoying
-" https://github.com/Microsoft/console/issues/70
-" background colors not being drawn when scrolling in WSL
-
-let ayucolor="dark"
-colorscheme ayu
+let g:nord_comment_brightness = 20
+let g:nord_uniform_diff_background = 1
+colorscheme nord
