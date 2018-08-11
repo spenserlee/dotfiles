@@ -21,10 +21,6 @@ URxvt.intensityStyles:      false
 *.background:               my_bg
 *.cursorColor:              my_cursor
 
-!! annoying overlay by urxvt
-!!*fadeColor:                 my_fade 
-!!*fading:                    35
-
 !! URXVT
 !! keep the scrollback buffer 
 !! Scroll one line with Shift+Up/Down, or Shift+PgUp/Dn
@@ -46,6 +42,9 @@ URxvt.depth:                32
 
 URxvt*scrollBar:            false
 URxvt*scrollWithBuffer:     true
+
+URxvt*cursorBlink:          True
+URxvt*underlineURLs:        True
 
 URxvt.font:                 xft:SF Mono:regular:size=9
 URxvt.letterSpace:          -1
