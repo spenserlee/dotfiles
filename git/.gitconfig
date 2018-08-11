@@ -1,7 +1,0 @@
-[user]
-	name = spenserlee
-	email = Spenser.L159@gmail.com
-[push]
-	default = simple
-[core]
-	editor = nvim

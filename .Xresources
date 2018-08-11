@@ -1,0 +1,69 @@
+!! Font rendering
+Xft.dpi:                    96
+Xft.antialias:              true
+Xft.rgba:                   rgb
+Xft.hinting:                true
+Xft.hintstyle:              hintslight
+Xft.lcdfilter:              lcddefault
+URxvt.intensityStyles:      false
+
+!! Colourscheme
+!! #include ".Xresources.d/nord"
+#include ".Xresources.d/base16-ocean-256"
+
+#define bg_opacity          95
+#define my_bg               [bg_opacity]base00
+#define my_fg               base05
+#define my_cursor           base05
+#define my_fade             base04
+
+*.foreground:               my_fg
+*.background:               my_bg
+*.cursorColor:              my_cursor
+
+!! annoying overlay by urxvt
+!!*fadeColor:                 my_fade 
+!!*fading:                    35
+
+!! URXVT
+!! keep the scrollback buffer 
+!! Scroll one line with Shift+Up/Down, or Shift+PgUp/Dn
+URxvt.saveLines:            10000
+URxvt.keysym.Shift-Up:      command:\033]720;1\007
+URxvt.keysym.Shift-Down:    command:\033]721;1\007
+
+!! disable picture insert mode (why is this default)
+URxvt.iso14755:             false
+URxvt.iso14755_52:          false
+
+!! colors
+URxvt.depth:                32
+!!URxvt.background:           rgba:002f/0035/0041/9999
+
+!!"fake" transparency
+!!URxvt.transparent:          true
+!!URxvt.shading:              25
+
+URxvt*scrollBar:            false
+URxvt*scrollWithBuffer:     true
+
+URxvt.font:                 xft:SF Mono:regular:size=9
+URxvt.letterSpace:          -1
+
+!! Extensions
+URxvt.perl-ext-common:      default,resize-font,keyboard-select
+
+!! Resizing font (https://github.com/simmel/urxvt-resize-font)
+!!  Ctrl++ increase size
+!!  Ctrl+- decrease size
+!!  Ctrl+= reset size
+!!  Ctrl+? see current size
+
+!! Keyboard Select (https://github.com/muennich/urxvt-perls)
+!! disable default Meta-s binding
+URxvt.keysym.M-F:           perl:keyboard-select:activate
+
+!! Ctrl+Shift+c copy selection
+!! Ctrl+Shift+v paste clipboard
+URxvt.keysym.Shift-Control-V: eval:paste_clipboard
+URxvt.keysym.Shift-Control-C: eval:selection_to_clipboard

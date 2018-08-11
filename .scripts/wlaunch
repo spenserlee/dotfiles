@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# helper script to launch i3 from windows after starting
+# a windows X server
+#
+# source: https://github.com/Xyene/wsl-dotfiles
+
+export DISPLAY=:0.0
+#source ~/.bashrc
+[[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
+i3
