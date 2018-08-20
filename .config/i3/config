@@ -10,6 +10,10 @@ exec --no-startup-id compton
 
 # when i3 starts, open a terminal to homedir
 exec $term
+
+# run polybar
+exec_always --no-startup-id ~/.config/polybar/launch.sh
+
 # set the wallpaper
 exec_always --no-startup-id feh --bg-fill ~/.config/wall.png
 
@@ -18,9 +22,12 @@ exec_always --no-startup-id feh --bg-fill ~/.config/wall.png
 font pango:SF Mono, Regular 9
 
 # i3-gaps stuff
-for_window [class="^.*"] border pixel 4
+for_window [class="^.*"] border pixel 2
 gaps inner 15
 gaps outer 10
+
+# Do I want window titles? looks pretty good in https://redd.it/5hjy1n
+#for_window [class=".*"] title_format "<span font='SF Mono'> > %title</span>"
 
 # Set colours
 # set_from_resource $black       color #000000
@@ -66,22 +73,22 @@ client.placeholder       $base00  $base00  $base05  $base00    $base00
 client.background        $base07
 
 # Basic bar configuration using the Base16 variables.
-bar {
-    status_command i3status
-
-    colors {
-        background $base00
-        separator  $base01
-        statusline $base04
-
-        # State             Border  BG      Text
-        focused_workspace   $base05 $base0D $base00
-        active_workspace    $base05 $base03 $base00
-        inactive_workspace  $base03 $base01 $base05
-        urgent_workspace    $base08 $base08 $base00
-        binding_mode        $base00 $base0A $base00
-    }
-}
+#bar {
+#    status_command i3status
+#
+#    colors {
+#        background $base00
+#        separator  $base01
+#        statusline $base04
+#
+#        # State             Border  BG      Text
+#        focused_workspace   $base05 $base0D $base00
+#        active_workspace    $base05 $base03 $base00
+#        inactive_workspace  $base03 $base01 $base05
+#        urgent_workspace    $base08 $base08 $base00
+#        binding_mode        $base00 $base0A $base00
+#    }
+#}
 
 # start a terminal in home dir (fix for WSL starting in /mnt/c)
 bindsym $mod+Return         exec $term
