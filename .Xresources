@@ -8,14 +8,17 @@ Xft.lcdfilter:              lcddefault
 URxvt.intensityStyles:      false
 
 !! Colourscheme
-!! #include ".Xresources.d/nord"
-#include ".Xresources.d/base16-ocean-256"
+#include ".Xresources.d/nord-256"
 
-#define bg_opacity          95
-#define my_bg               [bg_opacity]base00
-#define my_fg               base05
-#define my_cursor           base05
-#define my_fade             base04
+!! If want a solid background
+!!#define my_bg               nord0 
+
+!! 10% darker than nord0 necessary for better contrast with transparency
+#define bg_opacity          90
+#define my_bg               [bg_opacity]#151B27
+#define my_fg               nord4
+#define my_cursor           nord6
+#define my_fade             nord3
 
 *.foreground:               my_fg
 *.background:               my_bg

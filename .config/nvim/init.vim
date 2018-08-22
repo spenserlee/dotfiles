@@ -21,11 +21,12 @@ set backspace=indent,eol,start          " backspace acts sensibly
 
 scriptencoding utf-8                    " needed for listchars on windows
 set encoding=utf-8                      " language encoding
+set cursorline                          " highlight current line
 set title                               " show what's open
 set ruler                               " always show current position
 set showcmd                             " display command typed
 set cmdheight=2                         " height of command bar
-set scrolloff=3                        " buffer line space when scrolling up/down
+set scrolloff=3                         " buffer line space when scrolling up/down
 set sidescrolloff=5                     " buffer line space when scrolling left/right
 set relativenumber                      " line numbers relative to cursor
 set number                              " show absolute line numbers
@@ -37,7 +38,7 @@ set splitright
 
 "set background=dark
 "colorscheme default
-set t_Co=256
+"set t_Co=256
 set background=dark
 
 "  -------------------
@@ -82,7 +83,7 @@ inoremap jj <ESC>
 " esc in terminal mode to exit insert mode
 :tnoremap <ESC> <C-\><C-n>
 
-" search visually selected text, press /
+" search visually selected text, press //
 vnoremap // y/\V<C-r>=escape(@",'/\')<CR><CR>
 
 " disable ex mode
@@ -150,8 +151,9 @@ Plug 'arcticicestudio/nord-vim'
 Plug 'chriskempson/base16-vim'
 
 " functional plugins
-Plug 'jiangmiao/auto-pairs'
-Plug 'ctrlpvim/ctrlp.vim'
+Plug 'jiangmiao/auto-pairs' " toggle disable with ALT+P
+Plug 'ctrlpvim/ctrlp.vim'   " should probably switch to fzf?
+Plug 'chrisbra/Colorizer'   " highlight hex code colours
 
 call plug#end()
 
@@ -163,17 +165,21 @@ call plug#end()
 let g:ctrlp_map='<c-p>'
 let g:ctrlp_cmd='CtrlPMRU'
 
+" URXVT doesn't support true color, leave this for now
 " Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
 " (see http://sunaku.github.io/tmux-24bit-color.html#usage )
-if (has("nvim"))
-    "let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-endif
+"if (has("nvim"))
+"    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+"endif
+"
+"" For Neovim > 0.1.5 and Vim > patch 7.4.1799 <
+"if (has("termguicolors"))
+"   set termguicolors
+"endif
 
-" For Neovim > 0.1.5 and Vim > patch 7.4.1799 <
-if (has("termguicolors"))
-   "set termguicolors
-endif
 
-let g:nord_comment_brightness = 20
 let g:nord_uniform_diff_background = 1
+let g:nord_underline = 1
+let g:nord_italic = 1
+let g:nord_italic_comments = 1
 colorscheme nord

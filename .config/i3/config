@@ -47,46 +47,47 @@ gaps outer 10
 # set_from_resource $white       color #000000
 # set_from_resource $darkwhite   color #000000
 
-set $base00 #2b303b
-set $base01 #343d46
-set $base02 #4f5b66
-set $base03 #65737e
-set $base04 #a7adba
-set $base05 #c0c5ce
-set $base06 #dfe1e8
-set $base07 #eff1f5
-set $base08 #bf616a
-set $base09 #d08770
-set $base0A #ebcb8b
-set $base0B #a3be8c
-set $base0C #96b5b4
-set $base0D #8fa1b3
-set $base0E #b48ead
-set $base0F #ab7967
+# nord colors
+set  $nord0   #2E3440
+set  $nord1   #3B4252
+set  $nord2   #434C5E
+set  $nord3   #4C566A
+set  $nord4   #D8DEE9
+set  $nord5   #E5E9F0
+set  $nord6   #ECEFF4
+set  $nord7   #8FBCBB
+set  $nord8   #88C0D0
+set  $nord9   #81A1C1
+set  $nord10  #5E81AC
+set  $nord11  #BF616A
+set  $nord12  #D08770
+set  $nord13  #EBCB8B
+set  $nord14  #A3BE8C
+set  $nord15  #B48EAD
 
-#class                   border   bg       text     indicator  child_border
-client.focused           $base05  $base0D  $base00  $base0D    $base0D
-client.focused_inactive  $base01  $base01  $base05  $base03    $base01
-client.unfocused         $base01  $base00  $base05  $base01    $base01
-client.urgent            $base08  $base08  $base00  $base08    $base08
-client.placeholder       $base00  $base00  $base05  $base00    $base00
-client.background        $base07
+# https://i3wm.org/docs/userguide.html#_changing_colors
+#class                   border   bg       text    indicator  child_border
+client.focused           $nord10  $nord10  $nord6  $nord10    $nord10
+client.focused_inactive  $nord3   $nord3   $nord4  $nord3     $nord3
+client.unfocused         $nord1   $nord0   $nord5  $nord1     $nord1
+client.urgent            $nord11  $nord11  $nord6  $nord11    $nord11
+client.placeholder       $nord0   $nord9   $nord4  $nord0     $nord0
+client.background        $nord1
 
-# Basic bar configuration using the Base16 variables.
 #bar {
 #    status_command i3status
 #
 #    colors {
-#        background $base00
-#        separator  $base01
-#        statusline $base04
+#        background $nord0
+#        separator  $nord1
+#        statusline $nord4
 #
 #        # State             Border  BG      Text
-#        focused_workspace   $base05 $base0D $base00
-#        active_workspace    $base05 $base03 $base00
-#        inactive_workspace  $base03 $base01 $base05
-#        urgent_workspace    $base08 $base08 $base00
-#        binding_mode        $base00 $base0A $base00
+#        focused_workspace   $nord5 $nord14 $nord0
+#        active_workspace    $nord5 $nord3  $nord0
+#        inactive_workspace  $nord3 $nord1  $nord5
+#        urgent_workspace    $nord11 $nord11  $nord0
+#        binding_mode        $nord0 $nord10 $nord0
 #    }
 #}
 
