@@ -1,6 +1,9 @@
 # https://i3wm.org/docs/userguide.html
 
-set $term --no-startup-id urxvt -cd ~/
+set $term --no-startup-id $TERMINAL
+
+# fix displays
+exec_always --no-startup-id xrandr --output DP-2 --right-of DP-1 --auto
 
 # ALT is the modifier
 set $mod Mod1
@@ -95,7 +98,7 @@ client.background        $nord1
 bindsym $mod+Return         exec $term
 
 # TODO: open terminal in same same directory
-# bindsym $mod+Shift+Return exec --no-startup-id samedir
+bindsym $mod+Shift+Return   exec --no-startup-id ~/.scripts/samedir
 
 # kill focused window
 bindsym $mod+Shift+q        kill
@@ -103,18 +106,29 @@ bindsym $mod+Shift+q        kill
 # reloading config & restarting i3
 bindsym $mod+Shift+r        reload
 bindsym $mod+Shift+w        restart 
+bindsym $mod+Shift+e        exit 
 
-# change focus using VIM keys
+# change focus using VIM keys and arrow keys
 bindsym $mod+h              focus left
 bindsym $mod+j              focus down
 bindsym $mod+k              focus up
 bindsym $mod+l              focus right
 
-# move with VIM keys
+bindsym $mod+Left           focus left
+bindsym $mod+Down           focus down
+bindsym $mod+Up             focus up
+bindsym $mod+Right          focus right
+
+# move with VIM keys and arrow keys
 bindsym $mod+Shift+h        move left
 bindsym $mod+Shift+j        move down
 bindsym $mod+Shift+k        move up
 bindsym $mod+Shift+l        move right
+
+bindsym $mod+Shift+Left     move  left
+bindsym $mod+Shift+Down     move  down
+bindsym $mod+Shift+Up       move  up
+bindsym $mod+Shift+Right    move  right
 
 # split with ' and / and open a terminal
 bindsym $mod+apostrophe     split horizontal ;; exec $term
@@ -169,4 +183,4 @@ bindsym  $mod+Shift+8  move container to workspace  $ws8
 bindsym  $mod+Shift+9  move container to workspace  $ws9
 bindsym  $mod+Shift+0  move container to workspace  $ws10
 
-assign [class="Firefox"] $ws2
+assign [class="Firefox"] $ws1

@@ -13,10 +13,7 @@ alias vim="nvim"
 alias vi="nvim"
 alias tree="tree -aC -I '.git' --dirsfirst"
 
-export VISUAL=nvim
-export EDITOR="$VISUAL"
-export BROWSER="firefox"
-export DISPLAY=:0.0
+export DISPLAY=:2
 
 PROMPT_DIRTRIM=3
 
@@ -30,7 +27,8 @@ function color_my_prompt {
     local time="\[\e[34m\]\T\[\e[m\]-"
     local user="\[\e[36m\]\u"
     local at="\[\e[m\]@"
-    local host="\[\e[32m\]\h\[\e[m\]:"
+    local host="\[\e[32m\]`hostname | cut -d "-" -f 3`\[\e[m\]:"   
+#    local host="\[\e[32m\]\h\[\e[m\]:"
     local dir="\[\e[33m\]\w"
     local git_color="\[\033[31m\]"
     local git_branch='(`git rev-parse --abbrev-ref HEAD 2>/dev/null || echo ''`)'
