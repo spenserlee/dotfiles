@@ -25,8 +25,8 @@ exec_always --no-startup-id feh --bg-fill ~/.config/wall.png
 font pango:SF Mono, Regular 9
 
 # i3-gaps stuff
-for_window [class="^.*"] border pixel 2
-gaps inner 15
+for_window [class="^.*"] border pixel 3
+gaps inner 10
 gaps outer 10
 
 # Do I want window titles? looks pretty good in https://redd.it/5hjy1n
@@ -106,18 +106,13 @@ bindsym $mod+Shift+q        kill
 # reloading config & restarting i3
 bindsym $mod+Shift+r        reload
 bindsym $mod+Shift+w        restart 
-bindsym $mod+Shift+e        exit 
+bindsym $mod+Ctrl+Shift+e   exit 
 
 # change focus using VIM keys and arrow keys
 bindsym $mod+h              focus left
 bindsym $mod+j              focus down
 bindsym $mod+k              focus up
 bindsym $mod+l              focus right
-
-bindsym $mod+Left           focus left
-bindsym $mod+Down           focus down
-bindsym $mod+Up             focus up
-bindsym $mod+Right          focus right
 
 # move with VIM keys and arrow keys
 bindsym $mod+Shift+h        move left
@@ -140,7 +135,7 @@ bindsym $mod+f              fullscreen toggle
 bindsym $mod+Shift+space    floating toggle
 
 # change focus between floating windows
-bindsym $mod+space          focus mode_toggle
+#bindsym $mod+space          focus mode_toggle
 
 
 # workspace settings
@@ -155,9 +150,21 @@ set $ws8 "8"
 set $ws9 "9"
 set $ws10 "10"
 
-bindsym $mod+Tab workspace back_and_forth
+# monitor workspace restrictions
+set $monitor_one DP-1
+set $monitor_two DP-2
+
+workspace $ws1 output $monitor_one
+workspace $ws2 output $monitor_one
+workspace $ws3 output $monitor_one
+
+workspace $ws4 output $monitor_two
+workspace $ws5 output $monitor_two
+workspace $ws6 output $monitor_two
+
+bindsym $mod+Tab    workspace back_and_forth
 bindsym $mod+Escape workspace prev
-bindsym $mod+Shift+Escape workspace next
+bindsym $mod+grave  workspace next
 
 # switch to workspace
 bindsym  $mod+1  workspace  $ws1
@@ -170,6 +177,11 @@ bindsym  $mod+7  workspace  $ws7
 bindsym  $mod+8  workspace  $ws8
 bindsym  $mod+9  workspace  $ws9
 bindsym  $mod+0  workspace  $ws10
+
+# alt switch to workspace on 2nd monitor
+bindsym $mod+Ctrl+1 workspace $ws4
+bindsym $mod+Ctrl+2 workspace $ws5
+bindsym $mod+Ctrl+3 workspace $ws6
 
 # move focused container to workspace
 bindsym  $mod+Shift+1  move container to workspace  $ws1

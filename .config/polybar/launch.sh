@@ -11,7 +11,7 @@ while pgrep -x polybar >/dev/null; do sleep 1; done
 #polybar example &
 
 for i in $(polybar -m | awk -F: '{print $1}'); do 
-    MONITOR=$i polybar --reload example -c ~/.config/polybar/config &
+    MONITOR=$i polybar --reload top -c ~/.config/polybar/config &
 done
 
 echo "Bars launched..."

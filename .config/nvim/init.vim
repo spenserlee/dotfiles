@@ -21,7 +21,7 @@ set backspace=indent,eol,start          " backspace acts sensibly
 
 scriptencoding utf-8                    " needed for listchars on windows
 set encoding=utf-8                      " language encoding
-set cursorline                          " highlight current line
+"set cursorline                          " highlight current line
 set title                               " show what's open
 set ruler                               " always show current position
 set showcmd                             " display command typed
