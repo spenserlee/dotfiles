@@ -21,12 +21,12 @@ set backspace=indent,eol,start          " backspace acts sensibly
 
 scriptencoding utf-8                    " needed for listchars on windows
 set encoding=utf-8                      " language encoding
-"set cursorline                          " highlight current line
-set title                               " show what's open
+"set title                               " show what's open
 set ruler                               " always show current position
 set showcmd                             " display command typed
+set cursorline                          " highlight current line
 set cmdheight=2                         " height of command bar
-set scrolloff=3                         " buffer line space when scrolling up/down
+set scrolloff=3                        " buffer line space when scrolling up/down
 set sidescrolloff=5                     " buffer line space when scrolling left/right
 set relativenumber                      " line numbers relative to cursor
 set number                              " show absolute line numbers
@@ -36,10 +36,9 @@ set hlsearch                            " highlight search results
 set splitbelow                          " new panes appear more natural
 set splitright
 
-"set background=dark
-"colorscheme default
-"set t_Co=256
+set t_Co=256
 set background=dark
+colorscheme default
 
 "  -------------------
 "  text formatting
@@ -76,20 +75,14 @@ set wildignore+=*/vendor/cache/*,*/public/system/*,*/tmp/*,*/log/*,*/solr/data/*
 "  -------------------
 "  mappings
 "  -------------------
-
+nnoremap gb :ls<CR>:b<Space>
 " pressing esc can be annoying
 inoremap jj <ESC>
-
-" esc in terminal mode to exit insert mode
-:tnoremap <ESC> <C-\><C-n>
-
-" search visually selected text, press //
-vnoremap // y/\V<C-r>=escape(@",'/\')<CR><CR>
 
 " disable ex mode
 noremap Q <NOP>
 
-" leader+/ clears search highlighting
+" Leader+/ clears search highlighting
 map <silent> <Leader>/ :noh<CR>
 
 " spell checking
@@ -113,6 +106,8 @@ map <Leader>tc :tabclose<CR>
 map <Leader>tm :tabmove 
 map <Leader>t<Leader> :tabnext 
 
+map <Leader>z :tab split<CR>
+
 " Let 'tl' toggle between this and the last accessed tab
 let g:lasttab = 1
 nmap <Leader>tl :exe "tabn ".g:lasttab<CR>
@@ -122,11 +117,11 @@ au TabLeave * let g:lasttab = tabpagenr()
 " Super useful when editing files in the same directory
 map <Leader>te :tabedit <c-r>=expand("%:p:h")<CR>/
 
-"  -------------------
-"  Python stuff
-"  -------------------
-let g:python_host_prog = '/usr/bin/python'
-let g:python3_host_prog = '/usr/bin/python3'
+" Open fuzzy finder
+map <C-p> :FZF
+
+" <C-:>w<CR> can get a little old.
+map <Leader>w :w<CR>
 
 "  -------------------
 "  setup vim plug
@@ -140,20 +135,27 @@ if empty(glob(s:vim_plug))
 endif
 
 "  -------------------
-"  plugins
+"  Python stuff
 "  -------------------
+let g:python_host_prog = '/usr/bin/python'
+let g:python3_host_prog = '/usr/bin/python3'
+
+"   -------------------
+"   plugins
+"   -------------------
 
 call plug#begin('~/.local/share/nvim/plugged')
 
 " colorschemes
-Plug 'ayu-theme/ayu-vim'
-Plug 'arcticicestudio/nord-vim'
-Plug 'chriskempson/base16-vim'
+Plug 'morhetz/gruvbox'
 
 " functional plugins
-Plug 'jiangmiao/auto-pairs' " toggle disable with ALT+P
-Plug 'ctrlpvim/ctrlp.vim'   " should probably switch to fzf?
-Plug 'chrisbra/Colorizer'   " highlight hex code colours
+Plug 'jiangmiao/auto-pairs'
+Plug 'https://github.com/google/vim-searchindex'
+Plug 'https://github.com/machakann/vim-highlightedyank'
+Plug 'https://github.com/tpope/vim-commentary'
+Plug '~/.fzf'
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh'}
 
 call plug#end()
 
@@ -161,25 +163,176 @@ call plug#end()
 "  plugin settings
 "  -------------------
 
-" Use MRU as default for CTRLP
-let g:ctrlp_map='<c-p>'
-let g:ctrlp_cmd='CtrlPMRU'
+" FZF settings
 
-" URXVT doesn't support true color, leave this for now
+    map <Leader>p :FZFMru<CR>
+
+    " TODO: submit pull request to update example to use fzf#wrap
+    " https://github.com/junegunn/fzf/wiki/Examples-(vim)#filtered-voldfiles-and-open-buffers
+    command! FZFMru call fzf#run(fzf#wrap(
+    \ { 'source':  reverse(s:all_files()),
+    \   'options': '-m -x +s',
+    \   'down':    '40%' }))
+
+    function! s:all_files()
+      return extend(
+      \ filter(copy(v:oldfiles),
+      \        "v:val !~ 'fugitive:\\|NERD_tree\\|^/tmp/\\|.git/'"),
+      \ map(filter(range(1, bufnr('$')), 'buflisted(v:val)'), 'bufname(v:val)'))
+    endfunction
+
+" End FZF settings
+
+" COC vim settings
+
+    " if hidden is not set, TextEdit might fail.
+    set hidden
+
+    " Some servers have issues with backup files, see #649
+    set nobackup
+    set nowritebackup
+
+    " Better display for messages
+    set cmdheight=2
+
+    " Smaller updatetime for CursorHold & CursorHoldI
+    set updatetime=300
+
+    " don't give |ins-completion-menu| messages.
+    set shortmess+=c
+
+    " always show signcolumns
+    set signcolumn=yes
+
+    " Use tab for trigger completion with characters ahead and navigate.
+    " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
+    inoremap <silent><expr> <TAB>
+          \ pumvisible() ? "\<C-n>" :
+          \ <SID>check_back_space() ? "\<TAB>" :
+          \ coc#refresh()
+    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+    function! s:check_back_space() abort
+      let col = col('.') - 1
+      return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+
+    " Use <c-space> to trigger completion.
+    inoremap <silent><expr> <C-Space> coc#refresh()
+
+    " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current position.
+    " Coc only does snippet and additional edit on confirm.
+    inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+    " Use `[c` and `]c` to navigate diagnostics
+    nmap <silent> [c <Plug>(coc-diagnostic-prev)
+    nmap <silent> ]c <Plug>(coc-diagnostic-next)
+
+    " Remap keys for gotos
+    nmap <silent> gd <Plug>(coc-definition)
+    nmap <silent> gy <Plug>(coc-type-definition)
+    nmap <silent> gi <Plug>(coc-implementation)
+    nmap <silent> gr <Plug>(coc-references)
+
+    " Use K to show documentation in preview window
+    nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+    function! s:show_documentation()
+      if (index(['vim','help'], &filetype) >= 0)
+        execute 'h '.expand('<cword>')
+      else
+        call CocAction('doHover')
+      endif
+    endfunction
+
+    " Highlight symbol under cursor on CursorHold
+    autocmd CursorHold * silent call CocActionAsync('highlight')
+
+    " Remap for rename current word
+    nmap <Leader>rn <Plug>(coc-rename)
+
+    " Remap for format selected region
+    xmap <Leader>f  <Plug>(coc-format-selected)
+    nmap <Leader>f  <Plug>(coc-format-selected)
+
+    augroup mygroup
+      autocmd!
+      " Setup formatexpr specified filetype(s).
+      autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+      " Update signature help on jump placeholder
+      autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+    augroup end
+
+    " Remap for do codeAction of selected region, ex: `<Leader>aap` for current paragraph
+    xmap <Leader>a  <Plug>(coc-codeaction-selected)
+    nmap <Leader>a  <Plug>(coc-codeaction-selected)
+
+    " Remap for do codeAction of current line
+    nmap <Leader>ac  <Plug>(coc-codeaction)
+    " Fix autofix problem of current line
+    nmap <Leader>qf  <Plug>(coc-fix-current)
+
+    " Use `:Format` to format current buffer
+    command! -nargs=0 Format :call CocAction('format')
+
+    " Use `:Fold` to fold current buffer
+    command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+
+    " use `:OR` for organize import of current buffer
+    command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+    " Add diagnostic info for https://github.com/itchyny/lightline.vim
+    let g:lightline = {
+          \ 'colorscheme': 'wombat',
+          \ 'active': {
+          \   'left': [ [ 'mode', 'paste' ],
+          \             [ 'cocstatus', 'readonly', 'filename', 'modified' ] ]
+          \ },
+          \ 'component_function': {
+          \   'cocstatus': 'coc#status'
+          \ },
+          \ }
+
+
+
+    " Using CocList
+    " Show all diagnostics
+    " nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+    " Manage extensions
+    " nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+    " Show commands
+    nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+    " Find symbol of current document
+    nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+    " Search workspace symbols
+    nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+    " Do default action for next item.
+    " nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+    " Do default action for previous item.
+    " nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+    " Resume latest coc list
+    " nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+" end of COC vim settings
+
+if has('win32')
+  nmap <C-/> gcc<Space>
+  vmap <C-/> gc<Space>
+else
+  nmap <C-_> gcc<Space>
+  vmap <C-_> gc<Space>
+endif
+
 " Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
 " (see http://sunaku.github.io/tmux-24bit-color.html#usage )
-"if (has("nvim"))
-"    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-"endif
-"
-"" For Neovim > 0.1.5 and Vim > patch 7.4.1799 <
-"if (has("termguicolors"))
-"   set termguicolors
-"endif
+" if (has("nvim"))
+"     let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+" endif
 
+" For Neovim > 0.1.5 and Vim > patch 7.4.1799 <
+" if (has("termguicolors"))
+"     set termguicolors
+" endif
 
-let g:nord_uniform_diff_background = 1
-let g:nord_underline = 1
-let g:nord_italic = 1
-let g:nord_italic_comments = 1
-colorscheme nord
+colorscheme gruvbox
+set bg=dark
