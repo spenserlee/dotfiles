@@ -37,8 +37,6 @@ set splitbelow                          " new panes appear more natural
 set splitright
 
 set t_Co=256
-set background=dark
-colorscheme default
 
 "  -------------------
 "  text formatting
@@ -75,23 +73,24 @@ set wildignore+=*/vendor/cache/*,*/public/system/*,*/tmp/*,*/log/*,*/solr/data/*
 "  -------------------
 "  mappings
 "  -------------------
-nnoremap gb :ls<CR>:b<Space>
+
+" Auto resize splits
+autocmd VimResized * wincmd =
+
 " pressing esc can be annoying
 inoremap jj <ESC>
 
 " disable ex mode
 noremap Q <NOP>
 
-" Leader+/ clears search highlighting
-map <silent> <Leader>/ :noh<CR>
+" Leader+h clears search highlighting
+map <silent> <Leader>h :noh<CR>
 
 " spell checking
 map <Leader>ss :setlocal spell!<CR> 
 
 map <Leader>sn ]s
 map <Leader>sp [s
-map <Leader>sa zg
-map <Leader>s? z=
 
 " window navigation
 map <C-j> <C-W>j
@@ -101,7 +100,6 @@ map <C-l> <C-W>l
 
 " tab navigation
 map <Leader>tn :tabnew<CR>
-map <Leader>to :tabonly<CR>
 map <Leader>tc :tabclose<CR>
 map <Leader>tm :tabmove 
 map <Leader>t<Leader> :tabnext 
@@ -115,13 +113,19 @@ au TabLeave * let g:lasttab = tabpagenr()
 
 " Opens a new tab with the current buffer's path
 " Super useful when editing files in the same directory
-map <Leader>te :tabedit <c-r>=expand("%:p:h")<CR>/
+noremap <Leader>te :tabedit <c-r>=expand("%:p:h")<CR>/
 
 " Open fuzzy finder
-map <C-p> :FZF
+noremap <C-p> :FZF<CR>
+
+" Fuzzy find open buffers
+noremap gb :Buffers<CR>
 
 " <C-:>w<CR> can get a little old.
-map <Leader>w :w<CR>
+noremap <Leader>w :w<CR>
+
+" Close this buffer, but don't close the split or window
+noremap <Leader>d :bp\|bd #<CR>
 
 "  -------------------
 "  setup vim plug
@@ -134,12 +138,6 @@ if empty(glob(s:vim_plug))
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
-"  -------------------
-"  Python stuff
-"  -------------------
-let g:python_host_prog = '/usr/bin/python'
-let g:python3_host_prog = '/usr/bin/python3'
-
 "   -------------------
 "   plugins
 "   -------------------
@@ -148,38 +146,43 @@ call plug#begin('~/.local/share/nvim/plugged')
 
 " colorschemes
 Plug 'morhetz/gruvbox'
+Plug 'arcticicestudio/nord-vim'
 
 " functional plugins
 Plug 'jiangmiao/auto-pairs'
 Plug 'https://github.com/google/vim-searchindex'
 Plug 'https://github.com/machakann/vim-highlightedyank'
 Plug 'https://github.com/tpope/vim-commentary'
-Plug '~/.fzf'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh'}
 
 call plug#end()
 
-"  -------------------
-"  plugin settings
-"  -------------------
+" Appearance Plugin Settings
+colorscheme gruvbox
+set bg=dark
+
 
 " FZF settings
 
-    map <Leader>p :FZFMru<CR>
+    " Search for text using rg:
+    " --column: Show column number
+    " --line-number: Show line number
+    " --no-heading: Do not show file headings in results
+    " --fixed-strings: Search term as a literal string
+    " --ignore-case: Case insensitive search
+    " --no-ignore: Do not respect .gitignore, etc...
+    " --hidden: Search hidden files and folders
+    " --follow: Follow symlinks
+    " --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
+    " --color: Search color options
 
-    " TODO: submit pull request to update example to use fzf#wrap
-    " https://github.com/junegunn/fzf/wiki/Examples-(vim)#filtered-voldfiles-and-open-buffers
-    command! FZFMru call fzf#run(fzf#wrap(
-    \ { 'source':  reverse(s:all_files()),
-    \   'options': '-m -x +s',
-    \   'down':    '40%' }))
+    command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!tags" --glob "!.svn/*" --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
 
-    function! s:all_files()
-      return extend(
-      \ filter(copy(v:oldfiles),
-      \        "v:val !~ 'fugitive:\\|NERD_tree\\|^/tmp/\\|.git/'"),
-      \ map(filter(range(1, bufnr('$')), 'buflisted(v:val)'), 'bufname(v:val)'))
-    endfunction
+    map <Leader>/ :Find<Space>
+
+    map <Leader>p :History<CR>
 
 " End FZF settings
 
@@ -325,14 +328,12 @@ endif
 
 " Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
 " (see http://sunaku.github.io/tmux-24bit-color.html#usage )
-" if (has("nvim"))
-"     let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-" endif
+if (has("nvim"))
+    let $NVIM_TUI_ENABLE_TRUE_COLOR=1
+endif
 
 " For Neovim > 0.1.5 and Vim > patch 7.4.1799 <
-" if (has("termguicolors"))
-"     set termguicolors
-" endif
+if (has("termguicolors"))
+    set termguicolors
+endif
 
-colorscheme gruvbox
-set bg=dark
