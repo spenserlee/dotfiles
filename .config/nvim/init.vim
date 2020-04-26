@@ -24,7 +24,7 @@ set encoding=utf-8                      " language encoding
 "set title                               " show what's open
 set ruler                               " always show current position
 set showcmd                             " display command typed
-set cursorline                          " highlight current line
+" set cursorline                          " highlight current line
 set cmdheight=2                         " height of command bar
 set scrolloff=3                        " buffer line space when scrolling up/down
 set sidescrolloff=5                     " buffer line space when scrolling left/right
@@ -54,9 +54,16 @@ set si                                  " smart indent
 set list                                " visualize whitespace
 set listchars=tab:→→,trail:⋅,nbsp:⋅     " characters to show
 
+" Prefer yaml files with 2 spaces
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+
 "  -------------------
 "  misc
 "  -------------------
+
+set conceallevel=2
+set concealcursor-=n
+let g:vim_markdown_folding_disabled = 1
 
 " Use relative numbers by default (normal/visual), but absolue in insert mode
 autocmd! BufLeave,FocusLost,InsertEnter   * set norelativenumber
@@ -73,6 +80,10 @@ set wildignore+=*/vendor/cache/*,*/public/system/*,*/tmp/*,*/log/*,*/solr/data/*
 "  -------------------
 "  mappings
 "  -------------------
+
+" How is this NOT the default in vim?
+nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
+nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
 
 " Auto resize splits
 autocmd VimResized * wincmd =
@@ -92,11 +103,11 @@ map <Leader>ss :setlocal spell!<CR>
 map <Leader>sn ]s
 map <Leader>sp [s
 
-" window navigation
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
+" " window navigation
+" map <M-j> <C-W>j
+" map <M-k> <C-W>k
+" map <M-h> <C-W>h
+" map <M-l> <C-W>l
 
 " tab navigation
 map <Leader>tn :tabnew<CR>
@@ -105,6 +116,12 @@ map <Leader>tm :tabmove
 map <Leader>t<Leader> :tabnext 
 
 map <Leader>z :tab split<CR>
+
+nnoremap <Leader>v `[v`]`
+
+" jump to next brace usually want the function to occupy most of screen
+nnoremap ]] ]]zt
+nnoremap [[ [[zt
 
 " Let 'tl' toggle between this and the last accessed tab
 let g:lasttab = 1
@@ -115,17 +132,24 @@ au TabLeave * let g:lasttab = tabpagenr()
 " Super useful when editing files in the same directory
 noremap <Leader>te :tabedit <c-r>=expand("%:p:h")<CR>/
 
-" Open fuzzy finder
-noremap <C-p> :FZF<CR>
-
-" Fuzzy find open buffers
-noremap gb :Buffers<CR>
-
 " <C-:>w<CR> can get a little old.
 noremap <Leader>w :w<CR>
 
 " Close this buffer, but don't close the split or window
 noremap <Leader>d :bp\|bd #<CR>
+
+" Count the occurrences of the previous search
+" https://vi.stackexchange.com/a/100
+nnoremap <leader>n :%s///gn<CR>
+
+" center the screen for the next match
+
+nnoremap n nzz :SearchIndex<CR>
+" nnoremap N Nzz
+
+" center the screen for the first match
+
+" cnoremap <expr> <CR> getcmdtype() =~ '[/?]' ? '<CR>zz' : '<CR>'
 
 "  -------------------
 "  setup vim plug
@@ -148,14 +172,32 @@ call plug#begin('~/.local/share/nvim/plugged')
 Plug 'morhetz/gruvbox'
 Plug 'arcticicestudio/nord-vim'
 
+Plug 'https://github.com/vim-airline/vim-airline'
+Plug 'https://github.com/vim-airline/vim-airline-themes'
+
 " functional plugins
-Plug 'jiangmiao/auto-pairs'
+" I like to use full URL so that it's easy to open the repo with gx
+Plug 'https://github.com/jiangmiao/auto-pairs'
 Plug 'https://github.com/google/vim-searchindex'
 Plug 'https://github.com/machakann/vim-highlightedyank'
+Plug 'https://github.com/godlygeek/tabular'
 Plug 'https://github.com/tpope/vim-commentary'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': './install.sh'}
+Plug 'https://github.com/plasticboy/vim-markdown'
+Plug 'https://github.com/junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'https://github.com/junegunn/fzf.vim'
+Plug 'https://github.com/neoclide/coc.nvim', { 'tag': 'v0.0.77' }
+" Plug 'https://github.com/neoclide/coc.nvim', {'branch': 'release'}
+Plug 'https://github.com/tpope/vim-fugitive'
+Plug 'https://github.com/tpope/vim-obsession'
+Plug 'https://github.com/christoomey/vim-tmux-navigator'
+
+Plug 'https://github.com/rust-lang/rust.vim'
+
+if has('nvim') || has('patch-8.0.902')
+  Plug 'mhinz/vim-signify'
+else
+  Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
+endif
 
 call plug#end()
 
@@ -163,26 +205,33 @@ call plug#end()
 colorscheme gruvbox
 set bg=dark
 
+" let g:airline_theme='simple'
+let g:airline_theme='base16_gruvbox_dark_hard'
+let g:airline#extensions#whitespace#enabled = 0
+" TODO: Don't distinguish between INSERT mode and INSERT Completion mode
+" let g:airline_mode_map = {}
+" let g:airline_mode_map['ic'] = 'INSERT'
+" Show a dollar sign next to line number if vim session is being tracked
+let g:airline_section_z = airline#section#create(['%{ObsessionStatus(''$'', '''')}', 'windowswap', '%3p%% ', 'linenr', ':%3v '])
+
+" Disable tmux navigator when zooming the Vim pane
+let g:tmux_navigator_disable_when_zoomed = 1
+
+let g:tmux_navigator_no_mappings = 1
+
+nnoremap <silent> <M-h> :TmuxNavigateLeft<cr>
+nnoremap <silent> <M-j> :TmuxNavigateDown<cr>
+nnoremap <silent> <M-k> :TmuxNavigateUp<cr>
+nnoremap <silent> <M-l> :TmuxNavigateRight<cr>
+nnoremap <silent> <M-\> :TmuxNavigatePrevious<cr>
 
 " FZF settings
 
-    " Search for text using rg:
-    " --column: Show column number
-    " --line-number: Show line number
-    " --no-heading: Do not show file headings in results
-    " --fixed-strings: Search term as a literal string
-    " --ignore-case: Case insensitive search
-    " --no-ignore: Do not respect .gitignore, etc...
-    " --hidden: Search hidden files and folders
-    " --follow: Follow symlinks
-    " --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
-    " --color: Search color options
-
-    command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --no-ignore --hidden --follow --glob "!tags" --glob "!.svn/*" --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
-
-    map <Leader>/ :Find<Space>
-
-    map <Leader>p :History<CR>
+    noremap <C-p> :Files<CR>
+    noremap gb :Buffers<CR>
+    noremap gl :BLines<CR>
+    noremap <Leader>/ :Rg<Space>
+    noremap <Leader>p :History<CR>
 
 " End FZF settings
 
@@ -196,7 +245,7 @@ set bg=dark
     set nowritebackup
 
     " Better display for messages
-    set cmdheight=2
+    set cmdheight=1
 
     " Smaller updatetime for CursorHold & CursorHoldI
     set updatetime=300
@@ -228,8 +277,10 @@ set bg=dark
     inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 
     " Use `[c` and `]c` to navigate diagnostics
-    nmap <silent> [c <Plug>(coc-diagnostic-prev)
-    nmap <silent> ]c <Plug>(coc-diagnostic-next)
+    " nmap <silent> [c <Plug>(coc-diagnostic-prev)
+    " nmap <silent> ]c <Plug>(coc-diagnostic-next)
+    nmap ]c <plug>(signify-next-hunk)
+    nmap [c <plug>(signify-prev-hunk)
 
     " Remap keys for gotos
     nmap <silent> gd <Plug>(coc-definition)
@@ -238,7 +289,8 @@ set bg=dark
     nmap <silent> gr <Plug>(coc-references)
 
     " Use K to show documentation in preview window
-    nnoremap <silent> K :call <SID>show_documentation()<CR>
+    " TODO: K used by fugitive.vim
+    " nnoremap <silent> K :call <SID>show_documentation()<CR>
 
     function! s:show_documentation()
       if (index(['vim','help'], &filetype) >= 0)
@@ -267,13 +319,13 @@ set bg=dark
     augroup end
 
     " Remap for do codeAction of selected region, ex: `<Leader>aap` for current paragraph
-    xmap <Leader>a  <Plug>(coc-codeaction-selected)
-    nmap <Leader>a  <Plug>(coc-codeaction-selected)
+    " xmap <Leader>a  <Plug>(coc-codeaction-selected)
+    " nmap <Leader>a  <Plug>(coc-codeaction-selected)
 
     " Remap for do codeAction of current line
-    nmap <Leader>ac  <Plug>(coc-codeaction)
+    " nmap <Leader>ac  <Plug>(coc-codeaction)
     " Fix autofix problem of current line
-    nmap <Leader>qf  <Plug>(coc-fix-current)
+    " nmap <Leader>qf  <Plug>(coc-fix-current)
 
     " Use `:Format` to format current buffer
     command! -nargs=0 Format :call CocAction('format')
@@ -295,8 +347,6 @@ set bg=dark
           \   'cocstatus': 'coc#status'
           \ },
           \ }
-
-
 
     " Using CocList
     " Show all diagnostics

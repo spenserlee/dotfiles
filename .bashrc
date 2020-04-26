@@ -13,6 +13,15 @@ alias vim="nvim"
 alias vi="nvim"
 alias tree="tree -aC -I '.git' --dirsfirst"
 
+export VISUAL=nvim
+export EDITOR="$VISUAL"
+
+export RIPGREP_CONFIG_PATH=/home/slee01/.ripgreprc
+
+export FZF_DEFAULT_OPTS='--height 60% --border --reverse'
+export FZF_DEFAULT_COMMAND="rg --files --hidden --smart-case -g '!{.git,.svn}'"
+export FZF_CTRL_T_COMMAND=$FZF_DEFAULT_COMMAND
+
 export DISPLAY=:2
 
 PROMPT_DIRTRIM=3
@@ -162,3 +171,7 @@ if ! shopt -oq posix; then
 fi
 
 color_my_prompt
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
